@@ -1,65 +1,177 @@
-# 🏔️ COM727 Everest Chatbot
 
-This project is an AI-based intent classification chatbot built for the **COM727 - Artificial Intelligence** module. The chatbot is trained to answer a wide range of questions related to **Mount Everest**, such as its location, height, climbers, risks, and more.
+# 📦 Project Setup Instructions
 
-It includes:
-- Training the chatbot model using intent data
-- Evaluating its performance with precision, recall, F1-score
-- Running an interactive chatbot in the terminal
+A beginner-friendly step-by-step instruction to set up and run the chatbot project locally.
 
 ---
 
-## 📁 Project Structure
-
-COM727_Everest_Chatbot/
-│
-├── chatbot/
-│ ├── chatbot.py # Main chatbot script (user interacts here)
-│ └── intents.json # Data file containing patterns and responses
-│
-├── model/
-│ ├── training.py # Trains the model and saves all artifacts
-│ ├── evaluate_model.py # Evaluates the model and generates reports
-│ ├── chatbot_model.keras # Trained neural network model
-│ ├── words.pkl # Preprocessed vocabulary used in BoW
-│ ├── classes.pkl # All predicted tags (labels)
-│ ├── training_data.pkl # Saved training features and labels
-│ └── training_history.pkl # Tracks loss and accuracy per epoch
-│
-├── evaluation/
-│ ├──evaluation_report.csv # Generated classification metrics (CSV)
-│ ├──evaluation_table.png # Table of metrics (PNG image)
-│ └── evaluation_metrics_chart.png# Chart of precision, recall, f1-score
-│
-├── requirements.txt # List of required Python packages
-└── README.md # Project documentation (this file)
-
+## ⚙️ System Requirements
+Python version: 3.12.2
+OS: macOS (also works on Windows/Linux with slight path changes)
+Terminal or VS Code recommended
 
 ---
 
-## ⚙️ Setup Instructions
+## 🗂 Project Structure
+Ensure your folder structure looks like this:
+```
+COM727_EverestChatbot/
+│
+├── chatbot/                     # Core chatbot logic
+|   ├── chatbot.py
+│   ├── chatbot_utils.py
+│   └── intents.json
+│
+├── model/                      # Model training & evaluation
+│   ├── training.py
+│   ├── evaluate_model.py
+│   ├── chatbot_model.keras
+│   ├── classes.pkl
+│   ├── words.pkl
+│   ├── training_data.pkl
+│   └── training_history.pkl
+│
+├── web/                        # Flask web interface
+│   ├── app.py
+│   ├── templates/
+│   │   └── index.html
+│   └── static/
+│       └── style.css
+│
+├── requirements.txt
+└── venv/
+```
 
-### ✅ Step 1: Clone the project
+---
+
+## 📁 1. Download / Clone the Project
+
+If using Git:
 
 ```bash
-git clone https://github.com/yourusername/COM727_Everest_Chatbot.git
-cd COM727_Everest_Chatbot
+git clone https://github.com/your-username/COM727_EverestChatbot.git
+cd COM727_EverestChatbot
+```
 
+Or manually copy the full folder into your system.
 
-# 2. Create a virtual environment
+---
+
+## 🐍 2. Ensure Python 3.10 or Higher is Installed
+
+Check Python version:
+
+```bash
+python3 --version
+```
+
+If not installed, [download Python here](https://www.python.org/downloads/).
+
+---
+
+## 🧪 3. Create a Virtual Environment
+
+```bash
+python3 -m venv venv
+```
+
+### 🔹 Activate the environment:
+
+#### On Mac/Linux:
+
+```bash
+source venv/bin/activate
+```
+
+#### 🪟 On Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+---
+
+## 📦 4. Install Required Libraries
+
+Ensure you're inside the project root and venv is active:
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+---
+
+## 🧠 5. Download NLTK Resources
+
+Only run this once per system:
+
+```bash
+python -m nltk.downloader punkt wordnet stopwords
+```
+
+---
+
+## 🛠️ 6. Train the Model (Optional If Already Trained)
+
+```bash
+python model/training.py
+```
+
+Creates `chatbot_model.keras`, `words.pkl`, `classes.pkl`, etc.
+
+---
+
+## 📊 7. Evaluate Model Performance (Optional)
+
+```bash
+python model/evaluate_model.py
+```
+
+Outputs CSV, evaluation table image, and bar chart.
+
+---
+
+## 🌐 8. Run the Web Interface
+
+```bash
+cd web
+python app.py
+```
+
+Then open:
+
+```
+http://127.0.0.1:5000
+```
+
+---
+
+## 💬 Chat Features
+
+- Sidebar with expandable tags
+- Suggested question buttons
+- Typing animation
+- Responsive layout
+
+---
+
+## 🧹 Troubleshooting / Reset
+
+```bash
+deactivate
+
+rm -rf venv
+
 python3 -m venv venv
 
-# 3. Activate the virtual environment
-# On macOS/Linux:
 source venv/bin/activate
 
-# On Windows:
-venv\Scripts\activate
-
-# 4. Install required packages
 pip install -r requirements.txt
+```
 
-# (Optional) If you didn’t freeze "requirements.txt" or "requirements.txt" is missing.
-pip install tensorflow keras scikit-learn nltk matplotlib dataframe_image
+Check if Python is correctly linked:
 
-
+```bash
+which python
+```
