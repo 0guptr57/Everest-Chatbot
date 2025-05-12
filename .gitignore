@@ -1,0 +1,15 @@
+# Ignore Python virtual environments
+venv/
+
+# Ignore cache
+__pycache__/
+*.py[cod]
+
+# macOS metadata
+.DS_Store
+
+# Logs and compiled binaries
+*.log
+*.so
+*.dylib
+*.exe

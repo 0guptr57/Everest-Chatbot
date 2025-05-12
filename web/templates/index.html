@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Everest AI Chatbot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <!-- Hamburger for Mobile -->
+  <button class="hamburger" onclick="toggleSidebar()">
+    <span></span>
+  </button>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <h2>🧭 Explore Topics</h2>
+      {% for section in sidebar %}
+        <div class="sidebar-section">
+          <h3 onclick="toggleSection('{{ section.tag }}')">📌 {{ section.tag.replace('_', ' ').title() }}</h3>
+          <div id="{{ section.tag }}-questions" style="display: none;">
+            {% for q in section.patterns %}
+              <button onclick="askFromSidebar('{{ q }}')">{{ q }}</button>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="chat-area">
+      <h1>Everest AI Chatbot</h1>
+
+      <div class="topics">
+        <button onclick="showSuggestions('climb')">🧗 Climbing</button>
+        <button onclick="showSuggestions('location')">📍 Location</button>
+        <button onclick="showSuggestions('health')">🩺 Health</button>
+        <button onclick="showSuggestions('time')">📅 Best Time</button>
+      </div>
+
+      <div id="suggestions" class="suggestions"></div>
+
+      <div id="chatbox" class="chatbox"></div>
+
+      <div class="input-area">
+        <input type="text" id="userInput" placeholder="Ask something about Mount Everest..." />
+        <button id="sendBtn" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const suggestionMap = {
+      climb: ["What is the cost to climb Mount Everest?", "What is the minimum age to climb Mount Everest?", "Who first climbed Mount Everest?"],
+      location: ["Where is Mount Everest?", "Where can I find Mount Everest?", "Tell me the location of Mount Everest"],
+      health: ["How do climbers stay safe on Mount Everest?", "Is there any emergency rescue on Mount Everest?", "How to stay mentally strong on Everest?"],
+      time: ["What are the typical weather patterns on Everest?", "How long does it take to climb Mount Everest?", "Does Everest have seasonal weather changes?"]
+    };
+
+    function showSuggestions(topic) {
+      const box = document.getElementById("suggestions");
+      box.innerHTML = "";
+      suggestionMap[topic].forEach((q) => {
+        const btn = document.createElement("button");
+        btn.innerText = q;
+        btn.onclick = () => {
+          document.getElementById("userInput").value = q;
+          sendMessage();
+        };
+        box.appendChild(btn);
+      });
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const message = input.value.trim();
+      if (!message) return;
+
+      appendMessage("You", message, "user");
+      input.value = "";
+      showTyping();
+
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await res.json();
+        setTimeout(() => {
+          removeTyping();
+          appendMessage("Everest AI", data.response, "bot");
+        }, 500);
+      } catch (err) {
+        removeTyping();
+        appendMessage("Everest AI", "Oops! Something went wrong.", "bot");
+      }
+    }
+
+    function appendMessage(sender, text, cls) {
+      const chatbox = document.getElementById("chatbox");
+      const div = document.createElement("div");
+      div.className = cls;
+      div.innerHTML = `<strong>${sender}:</strong> ${text}`;
+      chatbox.appendChild(div);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function showTyping() {
+      const chatbox = document.getElementById("chatbox");
+      const typing = document.createElement("div");
+      typing.className = "bot typing";
+      typing.id = "typing-indicator";
+      typing.innerHTML = `<em>Everest AI is typing...</em>`;
+      chatbox.appendChild(typing);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function removeTyping() {
+      const typing = document.getElementById("typing-indicator");
+      if (typing) typing.remove();
+    }
+
+    // Handle Enter key
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("userInput").addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+    });
+
+    // Sidebar toggle for mobile
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const layout = document.querySelector(".layout");
+
+      sidebar.classList.toggle("open");
+      layout.classList.toggle("sidebar-open");
+    }
+
+    // Toggle sidebar sections
+    function toggleSection(tag) {
+      const el = document.getElementById(tag + "-questions");
+      el.style.display = el.style.display === "none" ? "block" : "none";
+    }
+
+    // Trigger question from sidebar
+    function askFromSidebar(q) {
+      document.getElementById("userInput").value = q;
+      sendMessage();
+    }
+  </script>
+</body>
+</html>
